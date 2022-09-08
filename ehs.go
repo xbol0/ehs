@@ -18,6 +18,7 @@ type ScanParams struct {
 	KeysReader  *os.File
 	Timeout     time.Duration
 	Threads     int
+	SkipFail    bool
 }
 
 func getTitle(body string) string {
@@ -86,14 +87,16 @@ func Scan(sp *ScanParams) {
 	for _, ip := range sp.Ips {
 		for _, base := range domainList {
 			ch <- &RequestConfig{
-				Url:     "http://" + ip + "/",
-				Host:    base,
-				Timeout: sp.Timeout,
+				Url:      "http://" + ip + "/",
+				Host:     base,
+				Timeout:  sp.Timeout,
+				SkipFail: sp.SkipFail,
 			}
 			ch <- &RequestConfig{
-				Url:     "https://" + ip + "/",
-				Host:    base,
-				Timeout: sp.Timeout,
+				Url:      "https://" + ip + "/",
+				Host:     base,
+				Timeout:  sp.Timeout,
+				SkipFail: sp.SkipFail,
 			}
 		}
 	}
@@ -113,14 +116,16 @@ func Scan(sp *ScanParams) {
 		for _, ip := range sp.Ips {
 			for _, base := range domainList {
 				ch <- &RequestConfig{
-					Url:     "http://" + ip + "/",
-					Host:    string(sub) + "." + base,
-					Timeout: sp.Timeout,
+					Url:      "http://" + ip + "/",
+					Host:     string(sub) + "." + base,
+					Timeout:  sp.Timeout,
+					SkipFail: sp.SkipFail,
 				}
 				ch <- &RequestConfig{
-					Url:     "https://" + ip + "/",
-					Host:    string(sub) + "." + base,
-					Timeout: sp.Timeout,
+					Url:      "https://" + ip + "/",
+					Host:     string(sub) + "." + base,
+					Timeout:  sp.Timeout,
+					SkipFail: sp.SkipFail,
 				}
 			}
 		}

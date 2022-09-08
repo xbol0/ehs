@@ -16,6 +16,7 @@ var (
 	threads  = flag.Int("n", 5, "Threads count to used send request.")
 	showHelp = flag.Bool("h", false, "Show this help message.")
 	domain   = flag.String("d", "", "REQUIRED. Domain or keyword.")
+	skipFail = flag.Bool("S", false, "Filter non-2XX response.")
 )
 
 func main() {
@@ -58,6 +59,7 @@ func main() {
 		KeysReader:  subReader,
 		Timeout:     time.Second * time.Duration(*timeout),
 		Threads:     *threads,
+		SkipFail:    *skipFail,
 	})
 }
 
@@ -68,9 +70,10 @@ func help() {
 		panic(err)
 	}
 
-	fmt.Printf("Usage: %s [-d domain] [-f file] [-t timeout] [-n threads] [-h] IP...\n",
+	fmt.Printf("Usage:\n  %s [-d domain] [-f file] [-t timeout] [-n threads] [-h] [-S] IP...\n",
 		path.Base(me))
 	fmt.Printf("\nParameters:\n")
 
 	flag.PrintDefaults()
+	fmt.Printf("\nMore information:\n  https://github.com/xbol0/ehs")
 }

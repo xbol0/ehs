@@ -2,15 +2,17 @@ package ehs
 
 import (
 	"crypto/tls"
+	"errors"
 	"io"
 	"net/http"
 	"time"
 )
 
 type RequestConfig struct {
-	Url     string
-	Host    string
-	Timeout time.Duration
+	Url      string
+	Host     string
+	Timeout  time.Duration
+	SkipFail bool
 }
 
 type SiteMeta struct {
@@ -18,6 +20,8 @@ type SiteMeta struct {
 	Title  string
 	Type   string
 }
+
+var ErrSkipFail = errors.New("Skip fail response.")
 
 func Request(c *RequestConfig) (*SiteMeta, error) {
 	q, err := http.NewRequest("GET", c.Url, nil)
@@ -34,6 +38,10 @@ func Request(c *RequestConfig) (*SiteMeta, error) {
 
 	if err != nil {
 		return nil, err
+	}
+
+	if c.SkipFail && !(res.StatusCode >= 200 && res.StatusCode < 300) {
+		return nil, ErrSkipFail
 	}
 
 	if res.ContentLength > MAX_SIZE {

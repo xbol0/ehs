@@ -53,4 +53,10 @@ ehs -t 5
 
 # Configure threads count
 ehs -n 10
+
+# Filter non-2XX response
+ehs -w sub.txt -d example.com -S 1.2.3.4
+
+# Output less message
+ehs -w sub.txt -d example.com -S 1.2.3.4 2>/dev/null
 ```
